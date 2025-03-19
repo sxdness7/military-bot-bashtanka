@@ -23,7 +23,7 @@ const fetchRealNews = async (): Promise<NewsItem[]> => {
   try {
     // Используем прокси-сервер для обхода ограничений CORS в браузере
     // Для NewsAPI в бесплатном плане есть ограничения на запросы из браузера
-    const url = `https://corsanywhere.herokuapp.com/https://newsapi.org/v2/everything?q=ukraine+OR+баштанка&language=ru&sortBy=publishedAt&pageSize=10&apiKey=${NEWS_API_KEY}`;
+    const url = `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://newsapi.org/v2/everything?q=ukraine+OR+баштанка&language=ru&sortBy=publishedAt&pageSize=10&apiKey=${NEWS_API_KEY}`)}`;
     
     console.log('Fetching news from NewsAPI');
     const response = await fetch(url);

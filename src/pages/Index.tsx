@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import Header from '@/components/layout/Header';
 import StatusPanel from '@/components/dashboard/StatusPanel';
@@ -45,7 +44,7 @@ const mockShellingEvents = [
 
 const Index = () => {
   const [currentTime, setCurrentTime] = useState('');
-  
+
   // Обновление текущего времени
   useEffect(() => {
     const timer = setInterval(() => {
@@ -55,14 +54,14 @@ const Index = () => {
         second: '2-digit'
       }));
     }, 1000);
-    
+
     return () => clearInterval(timer);
   }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      
+
       <main className="flex-1 container mx-auto p-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
           <StatusPanel 
@@ -70,11 +69,11 @@ const Index = () => {
             internetStatus="online" 
             lastUpdate={currentTime} 
           />
-          
+
           <AlertStatus 
             active={false} 
           />
-          
+
           <WeatherInfo 
             temperature={24} 
             condition="clear" 
@@ -82,21 +81,21 @@ const Index = () => {
             humidity={45} 
           />
         </div>
-        
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <NewsFeed news={fallbackNews} />
-          
+
           <ShellingReport 
             events={mockShellingEvents} 
             lastEvent="03.08.2023"
           />
         </div>
       </main>
-      
+
       <footer className="py-4 text-center text-sm text-gray-400">
         <div className="container mx-auto">
           <p>
-            Баштанка Телеграм Бот © 2023 | Информационная система мониторинга
+            Баштанка Телеграм Бот © 2025 | Информационная система мониторинга
           </p>
           <p className="mt-1 text-xs">
             Данные обновляются автоматически. Для экстренных ситуаций обращайтесь по телефону 101.
