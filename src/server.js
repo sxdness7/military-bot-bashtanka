@@ -32,20 +32,14 @@ bot.onText(/\/start/, async (msg) => {
   const chatId = msg.chat.id;
   const webAppUrl = 'https://soft-truffle-020837.netlify.app';
 
-  // Проверяем тип чата
-  if (msg.chat.type === 'private') {
-    // Для личных сообщений
-    await bot.sendMessage(chatId, 'Наблюдение за территорией:', {
-      reply_markup: {
-        inline_keyboard: [[
-          { text: 'Открыть приложение', web_app: { url: webAppUrl } }
-        ]]
-      }
-    });
-  } else {
-    // Для групповых чатов
-    await bot.sendMessage(chatId, 'Наблюдение за территорией активировано');
-  }
+  // Отправляем одинаковое сообщение для всех типов чатов
+  await bot.sendMessage(chatId, 'Наблюдение за территорией:', {
+    reply_markup: {
+      inline_keyboard: [[
+        { text: 'Открыть приложение', web_app: { url: webAppUrl } }
+      ]]
+    }
+  });
 });
 
 // Обработка добавления бота в группу
