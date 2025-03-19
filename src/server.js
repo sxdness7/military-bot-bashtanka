@@ -29,16 +29,19 @@ app.use('/*.tsx', (req, res, next) => {
 });
 
 // Обработка добавления бота в группу
-bot.on('new_chat_members', (msg) => {
+bot.on('new_chat_members', async (msg) => {
   const newMembers = msg.new_chat_members;
-  const botWasAdded = newMembers.some(member => member.id === bot.options.id);
+  const botInfo = await bot.getMe();
+  const botWasAdded = newMembers.some(member => member.id === botInfo.id);
   
   if (botWasAdded) {
     bot.sendMessage(msg.chat.id, 'Похуй танки ми з Баштанки!Наблюдение продолжается...');
   }
 });
 
-bot.onText(/\/start/, (msg) => {
+// Обработка команд
+bot.on('message', async (msg) => {
+  if (msg.text === '/start') {
   const chatId = msg.chat.id;
   const webAppUrl = 'https://soft-truffle-020837.netlify.app';
   
@@ -52,6 +55,11 @@ bot.onText(/\/start/, (msg) => {
     }
   });
 });
+
+// Показываем команды бота
+bot.setMyCommands([
+  { command: '/start', description: 'Открыть приложение для наблюдения' }
+]);
 
 // SPA routing
 app.get('*', (req, res) => {
