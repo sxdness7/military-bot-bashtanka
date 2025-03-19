@@ -1,3 +1,4 @@
+
 import express from 'express';
 import TelegramBot from 'node-telegram-bot-api';
 import path from 'path';
@@ -17,11 +18,9 @@ app.use((req, res, next) => {
   next();
 });
 
-// Serve static files from dist
 app.use(express.static(path.join(__dirname, '../dist')));
 console.log('Serving static files from:', path.join(__dirname, '../dist'));
 
-// Handle TypeScript files
 app.use('/*.tsx', (req, res, next) => {
   res.type('application/javascript');
   next();
@@ -29,50 +28,56 @@ app.use('/*.tsx', (req, res, next) => {
 
 // Обработка команды /start
 bot.onText(/\/start/, async (msg) => {
-  const chatId = msg.chat.id;
-  const webAppUrl = 'https://soft-truffle-020837.netlify.app';
+  try {
+    const chatId = msg.chat.id;
+    const webAppUrl = 'https://soft-truffle-020837.netlify.app';
 
-  // Отправляем одинаковое сообщение для всех типов чатов
-  await bot.sendMessage(chatId, 'Наблюдение за территорией:', {
-    reply_markup: {
-      inline_keyboard: [[
-        { text: 'Открыть приложение', web_app: { url: webAppUrl } }
-      ]]
-    }
-  });
+    await bot.sendMessage(chatId, 'Наблюдение за территорией:', {
+      reply_markup: {
+        inline_keyboard: [[
+          { text: 'Открыть приложение', web_app: { url: webAppUrl } }
+        ]]
+      }
+    });
+  } catch (error) {
+    console.error('Error in /start command:', error);
+  }
 });
 
 // Обработка добавления бота в группу
 bot.on('new_chat_members', async (msg) => {
-  const newMembers = msg.new_chat_members;
-  const botInfo = await bot.getMe();
-  const botWasAdded = newMembers.some(member => member.id === botInfo.id);
-  
-  if (botWasAdded) {
-    await bot.sendMessage(msg.chat.id, 'Похуй танки ми з Баштанки!Наблюдение продолжается...');
+  try {
+    const newMembers = msg.new_chat_members;
+    const botInfo = await bot.getMe();
+    const botWasAdded = newMembers.some(member => member.id === botInfo.id);
+    
+    if (botWasAdded) {
+      await bot.sendMessage(msg.chat.id, 'Похуй танки ми з Баштанки!Наблюдение продолжается...');
+    }
+  } catch (error) {
+    console.error('Error in new_chat_members:', error);
   }
 });
 
 // Обработка других команд
 bot.on('message', async (msg) => {
-  // Пропускаем команду /start, так как она обрабатывается отдельно
-  if (msg.text === '/start') return;
-  
-  const chatId = msg.chat.id;
-  
-  // Здесь можно добавить обработку других команд
-  if (msg.text && msg.text.startsWith('/')) {
-    // Пример обработки других команд
-    switch(msg.text) {
-      case '/help':
-        await bot.sendMessage(chatId, 'Доступные команды:\n/start - Начать наблюдение\n/help - Помощь');
-        break;
-      // Добавьте другие команды здесь
+  try {
+    if (msg.text && msg.text === '/start') return;
+    
+    const chatId = msg.chat.id;
+    
+    if (msg.text && msg.text.startsWith('/')) {
+      switch(msg.text) {
+        case '/help':
+          await bot.sendMessage(chatId, 'Доступные команды:\n/start - Начать наблюдение\n/help - Помощь');
+          break;
+      }
     }
+  } catch (error) {
+    console.error('Error in message handler:', error);
   }
 });
 
-// SPA routing
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
