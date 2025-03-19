@@ -31,7 +31,59 @@ const weatherLabels = {
   storm: 'Гроза',
 };
 
-// Симулятор случайных погодных данных для Баштанки
+// Баштанка координаты: 47.4056° N, 32.4383° E
+const BASHTANKA_LAT = 47.4056;
+const BASHTANKA_LON = 32.4383;
+const OPENWEATHER_API_KEY = 'PUT_YOUR_VALID_API_KEY_HERE'; // Нужен действующий ключ API
+
+// Получаем настоящие данные о погоде из OpenWeatherMap API
+const fetchRealWeatherData = async (): Promise<WeatherData> => {
+  try {
+    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${BASHTANKA_LAT}&lon=${BASHTANKA_LON}&appid=${OPENWEATHER_API_KEY}&units=metric&lang=ru`;
+    
+    console.log('Fetching weather data from OpenWeatherMap');
+    const response = await fetch(url);
+    
+    if (!response.ok) {
+      throw new Error(`OpenWeatherMap API returned ${response.status}`);
+    }
+    
+    const data = await response.json();
+    
+    // Преобразование данных из OpenWeatherMap в наш формат
+    const weatherId = data.weather[0].id;
+    let condition: 'clear' | 'cloudy' | 'rain' | 'storm';
+    
+    // Преобразуем коды OpenWeatherMap в наши категории
+    if (weatherId >= 200 && weatherId < 300) {
+      condition = 'storm'; // Гроза
+    } else if ((weatherId >= 300 && weatherId < 600) || (weatherId >= 700 && weatherId < 800)) {
+      condition = 'rain'; // Дождь, снег, туман
+    } else if (weatherId === 800) {
+      condition = 'clear'; // Ясно
+    } else {
+      condition = 'cloudy'; // Облачно
+    }
+    
+    return {
+      temperature: Math.round(data.main.temp),
+      condition,
+      windSpeed: Math.round(data.wind.speed),
+      humidity: data.main.humidity
+    };
+  } catch (error) {
+    console.error('Ошибка при получении данных о погоде:', error);
+    toast({
+      title: 'Ошибка погоды',
+      description: 'Не удалось получить данные о погоде. Пожалуйста, проверьте API ключ.',
+      variant: 'destructive',
+    });
+    
+    throw error;
+  }
+};
+
+// Резервные реалистичные данные для Баштанки на случай, если API недоступен
 const generateRealisticWeatherData = (): WeatherData => {
   // Текущая дата для определения сезона
   const now = new Date();
@@ -96,19 +148,17 @@ const generateRealisticWeatherData = (): WeatherData => {
 // Функция для получения погодных данных
 const fetchWeatherData = async (): Promise<WeatherData> => {
   try {
-    // Из-за ограничений API, используем симуляцию реалистичных данных
-    // В реальном приложении здесь был бы запрос к API
-    console.log('Генерация реалистичных погодных данных для Баштанки');
-    return generateRealisticWeatherData();
+    // Пытаемся получить реальные данные
+    return await fetchRealWeatherData();
   } catch (error) {
-    console.error('Ошибка при получении данных о погоде:', error);
+    console.error('Используем резервные данные о погоде:', error);
     toast({
       title: 'Информация',
-      description: 'Используем симуляцию погодных данных',
+      description: 'Используем резервные погодные данные. Проверьте API ключ.',
       variant: 'default',
     });
     
-    // Генерируем реалистичные данные
+    // Возвращаем резервные данные в случае ошибки
     return generateRealisticWeatherData();
   }
 };

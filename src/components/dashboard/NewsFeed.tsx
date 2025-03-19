@@ -15,7 +15,52 @@ type NewsFeedProps = {
   news: NewsItem[];
 };
 
-// Реалистичные примеры новостей для Баштанки
+// API ключ для NewsAPI
+const NEWS_API_KEY = 'PUT_YOUR_VALID_API_KEY_HERE'; // Нужен действующий ключ API
+
+// Получаем настоящие новости из NewsAPI
+const fetchRealNews = async (): Promise<NewsItem[]> => {
+  try {
+    const url = `https://newsapi.org/v2/everything?q=ukraine+OR+баштанка&language=ru&sortBy=publishedAt&pageSize=10&apiKey=${NEWS_API_KEY}`;
+    
+    console.log('Fetching news from NewsAPI');
+    const response = await fetch(url);
+    
+    if (!response.ok) {
+      throw new Error(`NewsAPI returned ${response.status}`);
+    }
+    
+    const data = await response.json();
+    
+    if (data.status !== 'ok' || !data.articles) {
+      throw new Error('Invalid response from NewsAPI');
+    }
+    
+    // Преобразуем формат данных NewsAPI в наш формат
+    return data.articles.map((article: any, index: number) => {
+      const pubDate = new Date(article.publishedAt);
+      
+      return {
+        id: index + 1,
+        title: article.title,
+        date: `${pubDate.getDate().toString().padStart(2, '0')}.${(pubDate.getMonth() + 1).toString().padStart(2, '0')}.${pubDate.getFullYear()}`,
+        source: article.source.name,
+        summary: article.description || 'Нет описания'
+      };
+    });
+  } catch (error) {
+    console.error('Ошибка при получении новостей:', error);
+    toast({
+      title: 'Ошибка новостей',
+      description: 'Не удалось получить новости. Пожалуйста, проверьте API ключ.',
+      variant: 'destructive',
+    });
+    
+    throw error;
+  }
+};
+
+// Резервные примеры новостей для Баштанки
 const generateMockNews = (): NewsItem[] => {
   const currentDate = new Date();
   
@@ -97,17 +142,17 @@ const generateMockNews = (): NewsItem[] => {
 // Функция для получения последних новостей
 const fetchLatestNews = async (): Promise<NewsItem[]> => {
   try {
-    console.log('Получение симуляции новостей для Баштанки');
-    return generateMockNews();
+    // Пытаемся получить реальные новости
+    return await fetchRealNews();
   } catch (error) {
-    console.error('Ошибка при получении последних новостей:', error);
+    console.error('Используем резервные новости:', error);
     toast({
       title: 'Информация',
-      description: 'Используем симуляцию новостей',
+      description: 'Используем резервные новости. Проверьте API ключ.',
       variant: 'default',
     });
     
-    // Возвращаем симуляцию новостей
+    // Возвращаем симуляцию новостей в случае ошибки
     return generateMockNews();
   }
 };
