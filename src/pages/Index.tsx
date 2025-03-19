@@ -82,14 +82,25 @@ const Index = () => {
           />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <NewsFeed news={fallbackNews} />
-
-          <ShellingReport 
-            events={mockShellingEvents} 
-            lastEvent="03.08.2023"
-          />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <WeatherInfo city="Баштанка" />
+            <WeatherInfo city="Дублин" />
+            <WeatherInfo city="Алматы" />
+            <WeatherInfo city="Белград" />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <NewsFeed city="Баштанка" />
+            <NewsFeed city="Дублин" />
+            <NewsFeed city="Алматы" />
+            <NewsFeed city="Белград" />
+          </div>
         </div>
+
+        <ShellingReport 
+          events={mockShellingEvents} 
+          lastEvent="03.08.2023"
+        />
       </main>
 
       <footer className="py-4 text-center text-sm text-gray-400">
