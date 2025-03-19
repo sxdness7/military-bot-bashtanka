@@ -1,7 +1,12 @@
 
-const express = require('express');
-const TelegramBot = require('node-telegram-bot-api');
-const path = require('path');
+import express from 'express';
+import TelegramBot from 'node-telegram-bot-api';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 const token = '8035186242:AAEnO3k6G9T_0UCaMkVUD2XWzRtYKIGl5H0';
