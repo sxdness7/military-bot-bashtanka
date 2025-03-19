@@ -28,13 +28,21 @@ app.use('/*.tsx', (req, res, next) => {
   next();
 });
 
+// Обработка добавления бота в группу
+bot.on('new_chat_members', (msg) => {
+  const newMembers = msg.new_chat_members;
+  const botWasAdded = newMembers.some(member => member.id === bot.options.id);
+  
+  if (botWasAdded) {
+    bot.sendMessage(msg.chat.id, 'Похуй танки ми з Баштанки!Наблюдение продолжается...');
+  }
+});
+
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
   const webAppUrl = 'https://soft-truffle-020837.netlify.app';
   
-  const welcomeMessage = msg.chat.type === 'private' 
-    ? 'Добро пожаловать! Нажмите кнопку ниже, чтобы открыть приложение:'
-    : 'Привет всем в чате! Я бот для доступа к веб-приложению. Используйте кнопку ниже:';
+  const welcomeMessage = 'Наблюдение за территорией:';
 
   bot.sendMessage(chatId, welcomeMessage, {
     reply_markup: {
