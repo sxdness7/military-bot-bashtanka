@@ -7,38 +7,18 @@ import WeatherInfo from '@/components/dashboard/WeatherInfo';
 import NewsFeed from '@/components/dashboard/NewsFeed';
 import ShellingReport from '@/components/dashboard/ShellingReport';
 
-// Mock data for demonstration
-const mockNews = [
+// Резервные данные для новостей
+const fallbackNews = [
   {
     id: 1,
-    title: 'Восстановление водоснабжения в северном районе',
-    date: '12.08.2023',
-    source: 'Баштанка Онлайн',
-    summary: 'После ремонтных работ восстановлено водоснабжение в северном районе города. Работы были завершены раньше запланированного срока.'
-  },
-  {
-    id: 2,
-    title: 'Открытие нового пункта выдачи гуманитарной помощи',
-    date: '10.08.2023',
-    source: 'Городская администрация',
-    summary: 'На улице Мира открылся новый пункт выдачи гуманитарной помощи. График работы: 9:00-17:00, кроме воскресенья.'
-  },
-  {
-    id: 3,
-    title: 'Плановое отключение электроэнергии',
-    date: '08.08.2023',
-    source: 'Энергетическая компания',
-    summary: 'В связи с плановыми работами 14 августа с 10:00 до 15:00 будет отключена электроэнергия по улицам Садовая, Ленина и Гагарина.'
-  },
-  {
-    id: 4,
-    title: 'Ремонт дороги на улице Центральной',
-    date: '05.08.2023',
-    source: 'Городская администрация',
-    summary: 'Начат ремонт дорожного покрытия на улице Центральной. Работы планируется завершить через две недели.'
+    title: 'Загрузка новостей...',
+    date: new Date().toLocaleDateString('ru-RU'),
+    source: 'Система',
+    summary: 'Пожалуйста, подождите, идет загрузка последних новостей.'
   }
 ];
 
+// Резервные данные для обстрелов
 const mockShellingEvents = [
   {
     id: 1,
@@ -66,7 +46,7 @@ const mockShellingEvents = [
 const Index = () => {
   const [currentTime, setCurrentTime] = useState('');
   
-  // Simulate real-time updates
+  // Обновление текущего времени
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date().toLocaleTimeString('ru-RU', {
@@ -104,7 +84,7 @@ const Index = () => {
         </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <NewsFeed news={mockNews} />
+          <NewsFeed news={fallbackNews} />
           
           <ShellingReport 
             events={mockShellingEvents} 
