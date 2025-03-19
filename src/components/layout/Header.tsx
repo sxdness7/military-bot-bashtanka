@@ -20,7 +20,7 @@ const Header = () => {
         <div className="flex items-center gap-3">
           <Shield className="h-8 w-8 text-military-accent" />
           <div>
-            <h1 className="text-2xl font-bold title-font text-white">БАШТАНКА</h1>
+            <h1 className="text-2xl font-bold title-font text-white">БАШТАНСКИЙ ЦЕНТР МОНИТОРИНГА</h1>
             <div className="flex items-center gap-2 text-sm text-military-accent">
               <MapPin className="h-4 w-4" />
               <span>Николаевская область, Украина</span>
