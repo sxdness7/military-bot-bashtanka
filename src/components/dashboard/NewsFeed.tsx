@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { FileText, Calendar } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 
@@ -10,33 +11,109 @@ type NewsItem = {
   summary: string;
 };
 
-const fetchRealNews = async (city: string): Promise<NewsItem[]> => {
+const fetchCityNews = async (city: string): Promise<NewsItem[]> => {
   try {
-    // Используем прокси для обхода CORS
-    const proxyUrl = 'https://api.allorigins.win/raw?url=';
-    const rssUrl = encodeURIComponent('https://rssexport.rbc.ru/rbcnews/news/30/full.rss');
-    
-    const response = await fetch(`${proxyUrl}${rssUrl}`);
-    if (!response.ok) throw new Error('RSS fetch failed');
-    
-    const text = await response.text();
-    const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(text, 'text/xml');
-    const items = xmlDoc.getElementsByTagName('item');
-    
-    return Array.from(items).slice(0, 5).map((item, index) => {
-      const title = item.getElementsByTagName('title')[0]?.textContent || 'Без заголовка';
-      const description = item.getElementsByTagName('description')[0]?.textContent || 'Нет описания';
-      const pubDate = item.getElementsByTagName('pubDate')[0]?.textContent || new Date().toUTCString();
+    switch (city) {
+      case 'Баштанка': {
+        // Используем прокси для обхода CORS
+        const proxyUrl = 'https://api.allorigins.win/raw?url=';
+        const siteUrl = encodeURIComponent('https://bashtanka.rayon.in.ua/news');
+        
+        const response = await fetch(`${proxyUrl}${siteUrl}`);
+        if (!response.ok) throw new Error('Failed to fetch Bashtanka news');
+        
+        const text = await response.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(text, 'text/html');
+        
+        const newsItems = Array.from(doc.querySelectorAll('.article-list article'))
+          .slice(0, 5)
+          .map((article, index) => {
+            const title = article.querySelector('.article-title')?.textContent?.trim() || 'Без заголовка';
+            const summary = article.querySelector('.article-summary')?.textContent?.trim() || '';
+            const dateStr = article.querySelector('.article-date')?.textContent?.trim() || '';
+            
+            return {
+              id: `bashtanka-${index}-${Date.now()}`,
+              title,
+              date: dateStr || new Date().toLocaleDateString('ru-RU'),
+              source: 'Bashtanka.Rayon',
+              summary
+            };
+          });
+          
+        return newsItems;
+      }
       
-      return {
-        id: `${index}-${Date.now()}`,
-        title: title,
-        date: new Date(pubDate).toLocaleDateString('ru-RU'),
-        source: 'РБК',
-        summary: description
-      };
-    });
+      case 'Дублин': {
+        const proxyUrl = 'https://api.allorigins.win/raw?url=';
+        const rssUrl = encodeURIComponent('https://www.rte.ie/news/dublin/rss');
+        
+        const response = await fetch(`${proxyUrl}${rssUrl}`);
+        if (!response.ok) throw new Error('Failed to fetch Dublin news');
+        
+        const text = await response.text();
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(text, 'text/xml');
+        const items = xmlDoc.getElementsByTagName('item');
+        
+        return Array.from(items).slice(0, 5).map((item, index) => ({
+          id: `dublin-${index}-${Date.now()}`,
+          title: item.querySelector('title')?.textContent || 'No title',
+          date: new Date(item.querySelector('pubDate')?.textContent || '').toLocaleDateString('ru-RU'),
+          source: 'RTE News',
+          summary: item.querySelector('description')?.textContent || 'No description'
+        }));
+      }
+      
+      case 'Алматы': {
+        const proxyUrl = 'https://api.allorigins.win/raw?url=';
+        const rssUrl = encodeURIComponent('https://tengrinews.kz/kazakhstan_news/rss/');
+        
+        const response = await fetch(`${proxyUrl}${rssUrl}`);
+        if (!response.ok) throw new Error('Failed to fetch Almaty news');
+        
+        const text = await response.text();
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(text, 'text/xml');
+        const items = xmlDoc.getElementsByTagName('item');
+        
+        return Array.from(items)
+          .filter(item => item.querySelector('description')?.textContent?.includes('Алматы'))
+          .slice(0, 5)
+          .map((item, index) => ({
+            id: `almaty-${index}-${Date.now()}`,
+            title: item.querySelector('title')?.textContent || 'Без заголовка',
+            date: new Date(item.querySelector('pubDate')?.textContent || '').toLocaleDateString('ru-RU'),
+            source: 'Tengrinews',
+            summary: item.querySelector('description')?.textContent || 'Нет описания'
+          }));
+      }
+      
+      case 'Белград': {
+        const proxyUrl = 'https://api.allorigins.win/raw?url=';
+        const rssUrl = encodeURIComponent('https://www.b92.net/eng/rss/news.xml');
+        
+        const response = await fetch(`${proxyUrl}${rssUrl}`);
+        if (!response.ok) throw new Error('Failed to fetch Belgrade news');
+        
+        const text = await response.text();
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(text, 'text/xml');
+        const items = xmlDoc.getElementsByTagName('item');
+        
+        return Array.from(items).slice(0, 5).map((item, index) => ({
+          id: `belgrade-${index}-${Date.now()}`,
+          title: item.querySelector('title')?.textContent || 'No title',
+          date: new Date(item.querySelector('pubDate')?.textContent || '').toLocaleDateString('ru-RU'),
+          source: 'B92',
+          summary: item.querySelector('description')?.textContent || 'No description'
+        }));
+      }
+      
+      default:
+        return [];
+    }
   } catch (error) {
     console.error('Ошибка при получении новостей:', error);
     throw error;
@@ -51,7 +128,7 @@ const NewsFeed = ({ city = 'Баштанка' }: { city: string }) => {
     const getNews = async () => {
       try {
         console.log(`Fetching news for ${city}`);
-        const newsItems = await fetchRealNews(city);
+        const newsItems = await fetchCityNews(city);
         setNews(newsItems);
       } catch (error) {
         console.error('Ошибка при получении новостей:', error);
