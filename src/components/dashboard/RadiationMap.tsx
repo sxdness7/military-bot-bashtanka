@@ -3,6 +3,15 @@ import React from 'react';
 import { MapContainer, TileLayer, Circle, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 
+interface City {
+  name: string;
+  radiation: number;
+}
+
+interface RadiationMapProps {
+  cities: City[];
+}
+
 const cityCoordinates = {
   'Баштанка': [47.4067, 32.4375],
   'Дублин': [53.3498, -6.2603],
@@ -10,50 +19,42 @@ const cityCoordinates = {
   'Белград': [44.7866, 20.4489]
 };
 
-interface RadiationMapProps {
-  cities: {
-    name: string;
-    radiation: number;
-  }[];
-}
-
-const RadiationMap = ({ cities }: RadiationMapProps) => {
-  const getRadiationColor = (level: number) => {
-    if (level < 20) return '#4ade80';
-    if (level < 50) return '#facc15';
-    return '#ef4444';
-  };
-
+const RadiationMap: React.FC<RadiationMapProps> = ({ cities }) => {
   return (
-    <div className="w-full h-[400px] mt-8 rounded-lg overflow-hidden border-2 border-red-600/50">
+    <div className="h-[400px] w-full rounded-lg overflow-hidden">
       <MapContainer
         center={[47.4067, 32.4375]}
-        zoom={4}
+        zoom={6}
         style={{ height: '100%', width: '100%' }}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
-        {cities.map((city) => (
-          <Circle
-            key={city.name}
-            center={cityCoordinates[city.name]}
-            radius={50000}
-            pathOptions={{
-              color: getRadiationColor(city.radiation),
-              fillColor: getRadiationColor(city.radiation),
-              fillOpacity: 0.7
-            }}
-          >
-            <Popup>
-              <div className="text-center">
-                <h3 className="font-bold">{city.name}</h3>
-                <p className="text-sm">Радиация: {city.radiation} мкР/час</p>
-              </div>
-            </Popup>
-          </Circle>
-        ))}
+        {cities.map((city) => {
+          const coords = cityCoordinates[city.name];
+          if (!coords) return null;
+          
+          return (
+            <Circle
+              key={city.name}
+              center={coords}
+              radius={50000}
+              pathOptions={{
+                color: city.radiation > 15 ? 'red' : 'green',
+                fillColor: city.radiation > 15 ? 'red' : 'green',
+                fillOpacity: 0.5
+              }}
+            >
+              <Popup>
+                <div className="text-center">
+                  <h3 className="font-bold">{city.name}</h3>
+                  <p>Радиация: {city.radiation} мкР/ч</p>
+                </div>
+              </Popup>
+            </Circle>
+          );
+        })}
       </MapContainer>
     </div>
   );
