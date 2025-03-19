@@ -19,8 +19,15 @@ app.use((req, res, next) => {
 });
 
 // Serve static files from dist
-app.use(express.static(path.join(__dirname, '../dist')));
-console.log('Serving static files from:', path.join(__dirname, '../dist'));
+const staticPath = path.join(__dirname, '../dist');
+app.use(express.static(staticPath));
+console.log('Serving static files from:', staticPath);
+
+// Ensure dist directory exists
+import fs from 'fs';
+if (!fs.existsSync(staticPath)) {
+  console.log('Warning: dist directory does not exist. Please run npm run build first.');
+}
 
 // Handle TypeScript files
 app.use('/*.tsx', (req, res, next) => {
@@ -30,7 +37,7 @@ app.use('/*.tsx', (req, res, next) => {
 
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
-  const webAppUrl = `https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co:3000`;
+  const webAppUrl = `https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co`;
   
   const welcomeMessage = msg.chat.type === 'private' 
     ? 'Добро пожаловать! Нажмите кнопку ниже, чтобы открыть приложение:'
