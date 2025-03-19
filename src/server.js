@@ -1,4 +1,3 @@
-
 import express from 'express';
 import TelegramBot from 'node-telegram-bot-api';
 import path from 'path';
@@ -28,49 +27,30 @@ app.use('/*.tsx', (req, res, next) => {
   next();
 });
 
-// Обработка всех сообщений
-bot.on('message', async (msg) => {
-  const chatId = msg.chat.id;
-  
-  // Проверяем, является ли это командой /start
-  if (msg.text && msg.text === '/start') {
-    const webAppUrl = 'https://soft-truffle-020837.netlify.app';
-    bot.sendMessage(chatId, 'Наблюдение за территорией', {
-      reply_markup: {
-        keyboard: [[
-          { text: 'Открыть карту', web_app: { url: webAppUrl } }
-        ]],
-        resize_keyboard: true
-      }
-    });
-    return;
-  }
-});
-
 // Обработка добавления бота в группу
 bot.on('new_chat_members', async (msg) => {
   const newMembers = msg.new_chat_members;
   const botInfo = await bot.getMe();
   const botWasAdded = newMembers.some(member => member.id === botInfo.id);
-  
+
   if (botWasAdded) {
-    const chatId = msg.chat.id;
-    const webAppUrl = 'https://soft-truffle-020837.netlify.app';
-    bot.sendMessage(chatId, 'Похуй танки ми з Баштанки!Наблюдение продолжается...', {
-      reply_markup: {
-        keyboard: [[
-          { text: 'Открыть карту', web_app: { url: webAppUrl } }
-        ]],
-        resize_keyboard: true
-      }
-    });
+    bot.sendMessage(msg.chat.id, 'Похуй танки ми з Баштанки!Наблюдение продолжается...');
   }
 });
 
-// Устанавливаем только одну команду
-bot.setMyCommands([
-  { command: '/start', description: 'Запустить бота' }
-]);
+// Обработка команды /start
+bot.onText(/\/start/, (msg) => {
+  const chatId = msg.chat.id;
+  const webAppUrl = 'https://soft-truffle-020837.netlify.app';
+
+  bot.sendMessage(chatId, 'Наблюдение за территорией:', {
+    reply_markup: {
+      inline_keyboard: [[
+        { text: 'Открыть приложение', web_app: { url: webAppUrl } }
+      ]]
+    }
+  });
+});
 
 // SPA routing
 app.get('*', (req, res) => {
