@@ -12,6 +12,8 @@ interface RadiationMapProps {
 
 const cityCoordinates: { [key: string]: [number, number] } = {
   'Баштанка': [47.4067, 32.4375],
+  'Дублин': [53.3498, -6.2603],
+  'Алматы': [43.2220, 76.8512],
   'Белград': [44.7866, 20.4489],
 };
 
@@ -26,7 +28,7 @@ const RadiationMap: React.FC<RadiationMapProps> = ({ cities }) => {
     <div className="w-full h-[400px] mt-8 rounded-lg overflow-hidden border-2 border-red-600/50">
       <MapContainer
         center={[47.4067, 32.4375]}
-        zoom={6}
+        zoom={4}
         style={{ height: '100%', width: '100%' }}
       >
         <TileLayer
