@@ -16,12 +16,14 @@ type NewsFeedProps = {
 };
 
 // API ключ для NewsAPI
-const NEWS_API_KEY = 'PUT_YOUR_VALID_API_KEY_HERE'; // Нужен действующий ключ API
+const NEWS_API_KEY = '241ca959ec114710896f74a50c9df9c4'; // Обновленный API ключ
 
 // Получаем настоящие новости из NewsAPI
 const fetchRealNews = async (): Promise<NewsItem[]> => {
   try {
-    const url = `https://newsapi.org/v2/everything?q=ukraine+OR+баштанка&language=ru&sortBy=publishedAt&pageSize=10&apiKey=${NEWS_API_KEY}`;
+    // Используем прокси-сервер для обхода ограничений CORS в браузере
+    // Для NewsAPI в бесплатном плане есть ограничения на запросы из браузера
+    const url = `https://corsanywhere.herokuapp.com/https://newsapi.org/v2/everything?q=ukraine+OR+баштанка&language=ru&sortBy=publishedAt&pageSize=10&apiKey=${NEWS_API_KEY}`;
     
     console.log('Fetching news from NewsAPI');
     const response = await fetch(url);
@@ -52,7 +54,7 @@ const fetchRealNews = async (): Promise<NewsItem[]> => {
     console.error('Ошибка при получении новостей:', error);
     toast({
       title: 'Ошибка новостей',
-      description: 'Не удалось получить новости. Пожалуйста, проверьте API ключ.',
+      description: 'Не удалось получить новости. Проблема с CORS или API ключом.',
       variant: 'destructive',
     });
     
@@ -148,7 +150,7 @@ const fetchLatestNews = async (): Promise<NewsItem[]> => {
     console.error('Используем резервные новости:', error);
     toast({
       title: 'Информация',
-      description: 'Используем резервные новости. Проверьте API ключ.',
+      description: 'Используем резервные новости. Проблема с CORS или API ключом.',
       variant: 'default',
     });
     

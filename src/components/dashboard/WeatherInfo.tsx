@@ -34,7 +34,7 @@ const weatherLabels = {
 // Баштанка координаты: 47.4056° N, 32.4383° E
 const BASHTANKA_LAT = 47.4056;
 const BASHTANKA_LON = 32.4383;
-const OPENWEATHER_API_KEY = 'PUT_YOUR_VALID_API_KEY_HERE'; // Нужен действующий ключ API
+const OPENWEATHER_API_KEY = '4ad707d02565eae2de0c80056ad34192'; // Обновленный API ключ
 
 // Получаем настоящие данные о погоде из OpenWeatherMap API
 const fetchRealWeatherData = async (): Promise<WeatherData> => {
