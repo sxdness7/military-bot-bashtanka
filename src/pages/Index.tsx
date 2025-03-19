@@ -75,13 +75,6 @@ const Index = () => {
           <AlertStatus 
             active={false} 
           />
-
-          <WeatherInfo 
-            temperature={24} 
-            condition="clear" 
-            windSpeed={3} 
-            humidity={45} 
-          />
         </div>
 
         
