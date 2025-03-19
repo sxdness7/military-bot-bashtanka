@@ -1,15 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, lazy, Suspense } from 'react';
 import Header from '@/components/layout/Header';
 import StatusPanel from '@/components/dashboard/StatusPanel';
 import AlertStatus from '@/components/dashboard/AlertStatus';
 import WeatherInfo from '@/components/dashboard/WeatherInfo';
 import NewsFeed from '@/components/dashboard/NewsFeed';
 import ShellingReport from '@/components/dashboard/ShellingReport';
-import dynamic from 'next/dynamic';
 
-const DynamicMap = dynamic(() => import('@/components/dashboard/RadiationMap'), {
-  ssr: false
-});
+const RadiationMap = lazy(() => import('@/components/dashboard/RadiationMap'));
 
 // Резервные данные для новостей
 const fallbackNews = [
@@ -106,14 +103,16 @@ const Index = () => {
           events={mockShellingEvents} 
           lastEvent="03.08.2023"
         />
-        <DynamicMap 
-          cities={[
-            { name: 'Баштанка', radiation: 20 },
-            { name: 'Дублин', radiation: 12 },
-            { name: 'Алматы', radiation: 15 },
-            { name: 'Белград', radiation: 18 }
-          ]} 
-        />
+        <Suspense fallback={<div>Loading Map...</div>}>
+          <RadiationMap 
+            cities={[
+              { name: 'Баштанка', radiation: 20 },
+              { name: 'Дублин', radiation: 12 },
+              { name: 'Алматы', radiation: 15 },
+              { name: 'Белград', radiation: 18 }
+            ]} 
+          />
+        </Suspense>
       </main>
 
       <footer className="py-4 text-center text-sm text-gray-400">
