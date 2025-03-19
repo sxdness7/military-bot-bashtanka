@@ -31,12 +31,14 @@ bot.onText(/\/start/, async (msg) => {
   try {
     const chatId = msg.chat.id;
     const webAppUrl = 'https://soft-truffle-020837.netlify.app';
-
+    
     await bot.sendMessage(chatId, 'Наблюдение за территорией:', {
       reply_markup: {
-        inline_keyboard: [[
-          { text: 'Открыть приложение', web_app: { url: webAppUrl } }
-        ]]
+        keyboard: [[{
+          text: 'Открыть приложение',
+          web_app: { url: webAppUrl }
+        }]],
+        resize_keyboard: true
       }
     });
   } catch (error) {
@@ -52,29 +54,21 @@ bot.on('new_chat_members', async (msg) => {
     const botWasAdded = newMembers.some(member => member.id === botInfo.id);
     
     if (botWasAdded) {
-      await bot.sendMessage(msg.chat.id, 'Похуй танки ми з Баштанки!Наблюдение продолжается...');
+      const chatId = msg.chat.id;
+      const webAppUrl = 'https://soft-truffle-020837.netlify.app';
+      
+      await bot.sendMessage(chatId, 'Похуй танки ми з Баштанки!Наблюдение продолжается...', {
+        reply_markup: {
+          keyboard: [[{
+            text: 'Открыть приложение',
+            web_app: { url: webAppUrl }
+          }]],
+          resize_keyboard: true
+        }
+      });
     }
   } catch (error) {
     console.error('Error in new_chat_members:', error);
-  }
-});
-
-// Обработка других команд
-bot.on('message', async (msg) => {
-  try {
-    if (msg.text && msg.text === '/start') return;
-    
-    const chatId = msg.chat.id;
-    
-    if (msg.text && msg.text.startsWith('/')) {
-      switch(msg.text) {
-        case '/help':
-          await bot.sendMessage(chatId, 'Доступные команды:\n/start - Начать наблюдение\n/help - Помощь');
-          break;
-      }
-    }
-  } catch (error) {
-    console.error('Error in message handler:', error);
   }
 });
 
