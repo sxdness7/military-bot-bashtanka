@@ -30,7 +30,7 @@ app.use('/*.tsx', (req, res, next) => {
 
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
-  const webAppUrl = `https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co:3000`;
+  const webAppUrl = 'https://soft-truffle-020837.netlify.app';
   
   const welcomeMessage = msg.chat.type === 'private' 
     ? 'Добро пожаловать! Нажмите кнопку ниже, чтобы открыть приложение:'
