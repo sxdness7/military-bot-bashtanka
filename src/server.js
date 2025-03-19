@@ -27,48 +27,55 @@ app.use('/*.tsx', (req, res, next) => {
   next();
 });
 
-// Обработка всех сообщений
-bot.on('message', async (msg) => {
-  console.log('Received message:', msg);
+// Обработка команды /start
+bot.onText(/\/start/, async (msg) => {
   const chatId = msg.chat.id;
-  
-  // Если это новая команда /start
-  if (msg.text && msg.text === '/start') {
-    const webAppUrl = 'https://soft-truffle-020837.netlify.app';
-    bot.sendMessage(chatId, 'Наблюдение за территорией:', {
+  const webAppUrl = 'https://soft-truffle-020837.netlify.app';
+
+  // Проверяем тип чата
+  if (msg.chat.type === 'private') {
+    // Для личных сообщений
+    await bot.sendMessage(chatId, 'Наблюдение за территорией:', {
       reply_markup: {
         inline_keyboard: [[
           { text: 'Открыть приложение', web_app: { url: webAppUrl } }
         ]]
       }
     });
+  } else {
+    // Для групповых чатов
+    await bot.sendMessage(chatId, 'Наблюдение за территорией активировано');
   }
 });
 
 // Обработка добавления бота в группу
 bot.on('new_chat_members', async (msg) => {
-  console.log('New chat members:', msg);
   const newMembers = msg.new_chat_members;
   const botInfo = await bot.getMe();
   const botWasAdded = newMembers.some(member => member.id === botInfo.id);
   
   if (botWasAdded) {
-    bot.sendMessage(msg.chat.id, 'Похуй танки ми з Баштанки!Наблюдение продолжается...');
+    await bot.sendMessage(msg.chat.id, 'Похуй танки ми з Баштанки!Наблюдение продолжается...');
   }
 });
 
-// Обработка команды /start отдельно
-bot.onText(/\/start/, (msg) => {
+// Обработка других команд
+bot.on('message', async (msg) => {
+  // Пропускаем команду /start, так как она обрабатывается отдельно
+  if (msg.text === '/start') return;
+  
   const chatId = msg.chat.id;
-  const webAppUrl = 'https://soft-truffle-020837.netlify.app';
-
-  bot.sendMessage(chatId, 'Наблюдение за территорией:', {
-    reply_markup: {
-      inline_keyboard: [[
-        { text: 'Открыть приложение', web_app: { url: webAppUrl } }
-      ]]
+  
+  // Здесь можно добавить обработку других команд
+  if (msg.text && msg.text.startsWith('/')) {
+    // Пример обработки других команд
+    switch(msg.text) {
+      case '/help':
+        await bot.sendMessage(chatId, 'Доступные команды:\n/start - Начать наблюдение\n/help - Помощь');
+        break;
+      // Добавьте другие команды здесь
     }
-  });
+  }
 });
 
 // SPA routing
