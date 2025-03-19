@@ -39,12 +39,10 @@ bot.on('new_chat_members', async (msg) => {
   }
 });
 
-// Обработка команд
-bot.on('message', async (msg) => {
-  if (msg.text === '/start') {
+// Обработка команды /start
+bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
   const webAppUrl = 'https://soft-truffle-020837.netlify.app';
-  
   const welcomeMessage = 'Наблюдение за территорией:';
 
   bot.sendMessage(chatId, welcomeMessage, {
