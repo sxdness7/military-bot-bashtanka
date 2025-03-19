@@ -15,6 +15,7 @@ const port = 3000;
 
 // Serve static files from dist
 app.use(express.static(path.join(__dirname, '../dist')));
+console.log('Serving static files from:', path.join(__dirname, '../dist'));
 
 // Handle TypeScript files
 app.use('/*.tsx', (req, res, next) => {
