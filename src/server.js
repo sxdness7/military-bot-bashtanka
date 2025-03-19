@@ -26,19 +26,18 @@ app.use('/*.tsx', (req, res, next) => {
   next();
 });
 
-// Обработка команды /start
+// Handle /start command
 bot.onText(/\/start/, async (msg) => {
   try {
     const chatId = msg.chat.id;
-    const webAppUrl = 'https://soft-truffle-020837.netlify.app';
-    
     await bot.sendMessage(chatId, 'Наблюдение за территорией:', {
       reply_markup: {
-        keyboard: [[{
-          text: 'Открыть приложение',
-          web_app: { url: webAppUrl }
-        }]],
-        resize_keyboard: true
+        inline_keyboard: [[
+          {
+            text: 'Открыть приложение',
+            web_app: { url: 'https://soft-truffle-020837.netlify.app' }
+          }
+        ]]
       }
     });
   } catch (error) {
@@ -46,29 +45,27 @@ bot.onText(/\/start/, async (msg) => {
   }
 });
 
-// Обработка добавления бота в группу
+// Handle bot being added to group
 bot.on('new_chat_members', async (msg) => {
   try {
-    const newMembers = msg.new_chat_members;
     const botInfo = await bot.getMe();
+    const newMembers = msg.new_chat_members;
     const botWasAdded = newMembers.some(member => member.id === botInfo.id);
     
     if (botWasAdded) {
-      const chatId = msg.chat.id;
-      const webAppUrl = 'https://soft-truffle-020837.netlify.app';
-      
-      await bot.sendMessage(chatId, 'Похуй танки ми з Баштанки!Наблюдение продолжается...', {
+      await bot.sendMessage(msg.chat.id, 'Похуй танки ми з Баштанки!Наблюдение продолжается...', {
         reply_markup: {
-          keyboard: [[{
-            text: 'Открыть приложение',
-            web_app: { url: webAppUrl }
-          }]],
-          resize_keyboard: true
+          inline_keyboard: [[
+            {
+              text: 'Открыть приложение',
+              web_app: { url: 'https://soft-truffle-020837.netlify.app' }
+            }
+          ]]
         }
       });
     }
   } catch (error) {
-    console.error('Error in new_chat_members:', error);
+    console.error('Error handling new chat members:', error);
   }
 });
 
