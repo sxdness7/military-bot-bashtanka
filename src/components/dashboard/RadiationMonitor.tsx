@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { Activity } from 'lucide-react';
+import { Activity, AlertTriangle } from 'lucide-react';
 
 interface RadiationData {
   level: number; // мкР/час
@@ -14,23 +13,39 @@ const getRadiationStatus = (level: number): 'normal' | 'elevated' | 'dangerous' 
   return 'dangerous';
 };
 
+const getStatusColor = (status: 'normal' | 'elevated' | 'dangerous'): string => {
+  switch (status) {
+    case 'normal': return 'border-green-500';
+    case 'elevated': return 'border-yellow-500';
+    case 'dangerous': return 'border-red-500';
+    default: return '';
+  }
+};
+
+
 const RadiationMonitor = ({ city }: { city: string }) => {
   // Временные данные, в реальности нужно будет получать с API
   const radiationData: RadiationData = {
     level: city === 'Дублин' ? 12 : city === 'Алматы' ? 15 : city === 'Белград' ? 18 : 20,
-    status: 'normal',
+    status: getRadiationStatus(city === 'Дублин' ? 12 : city === 'Алматы' ? 15 : city === 'Белград' ? 18 : 20),
     lastUpdate: new Date().toLocaleString('ru-RU')
   };
 
   return (
-    <div className="flex items-center gap-4 mt-2">
-      <Activity className="h-4 w-4 text-military-accent" />
-      <span className="text-sm">
-        Радиация: {radiationData.level} мкР/час
-        <span className={`ml-2 ${radiationData.status === 'normal' ? 'text-green-500' : 'text-red-500'}`}>
-          {radiationData.status === 'normal' ? '(норма)' : '(повышен)'}
+    <div className={`p-4 rounded-lg border ${getStatusColor(radiationData.status)} backdrop-blur-sm`}>
+      <div className="flex items-center justify-between mb-2">
+        <h3 className="text-lg font-bold text-red-400">{city}</h3>
+        <AlertTriangle className="h-5 w-5 text-red-500 animate-pulse" />
+      </div>
+      <div className="flex items-center gap-2">
+        <Activity className="h-4 w-4 text-red-400" />
+        <span className="text-sm text-red-200">
+          Уровень радиации: {radiationData.level} мкР/час
         </span>
-      </span>
+      </div>
+      <div className="mt-2 text-xs text-red-300">
+        Последнее обновление: {radiationData.lastUpdate}
+      </div>
     </div>
   );
 };
