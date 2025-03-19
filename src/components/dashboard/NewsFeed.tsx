@@ -10,26 +10,37 @@ type NewsItem = {
   summary: string;
 };
 
-const NEWS_API_KEY = '241ca959ec114710896f74a50c9df9c4';
-
 const fetchRealNews = async (city: string): Promise<NewsItem[]> => {
-  const query = `${city} AND Ukraine`;
-  const response = await fetch(
-    `https://newsapi.org/v2/everything?q=${encodeURIComponent(query)}&language=ru&sortBy=publishedAt&apiKey=${NEWS_API_KEY}`
-  );
-
-  if (!response.ok) {
-    throw new Error('News API error');
+  try {
+    // Используем прокси для обхода CORS
+    const proxyUrl = 'https://api.allorigins.win/raw?url=';
+    const rssUrl = encodeURIComponent('https://rssexport.rbc.ru/rbcnews/news/30/full.rss');
+    
+    const response = await fetch(`${proxyUrl}${rssUrl}`);
+    if (!response.ok) throw new Error('RSS fetch failed');
+    
+    const text = await response.text();
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(text, 'text/xml');
+    const items = xmlDoc.getElementsByTagName('item');
+    
+    return Array.from(items).slice(0, 5).map((item, index) => {
+      const title = item.getElementsByTagName('title')[0]?.textContent || 'Без заголовка';
+      const description = item.getElementsByTagName('description')[0]?.textContent || 'Нет описания';
+      const pubDate = item.getElementsByTagName('pubDate')[0]?.textContent || new Date().toUTCString();
+      
+      return {
+        id: `${index}-${Date.now()}`,
+        title: title,
+        date: new Date(pubDate).toLocaleDateString('ru-RU'),
+        source: 'РБК',
+        summary: description
+      };
+    });
+  } catch (error) {
+    console.error('Ошибка при получении новостей:', error);
+    throw error;
   }
-
-  const data = await response.json();
-  return data.articles.slice(0, 5).map((article: any, index: number) => ({
-    id: `${index}-${Date.now()}`,
-    title: article.title,
-    date: new Date(article.publishedAt).toLocaleDateString('ru-RU'),
-    source: article.source.name,
-    summary: article.description || article.content?.slice(0, 200) || 'Нет описания'
-  }));
 };
 
 const NewsFeed = ({ city = 'Баштанка' }: { city: string }) => {
