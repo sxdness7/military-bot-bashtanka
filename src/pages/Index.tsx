@@ -5,6 +5,11 @@ import AlertStatus from '@/components/dashboard/AlertStatus';
 import WeatherInfo from '@/components/dashboard/WeatherInfo';
 import NewsFeed from '@/components/dashboard/NewsFeed';
 import ShellingReport from '@/components/dashboard/ShellingReport';
+import dynamic from 'next/dynamic';
+
+const DynamicMap = dynamic(() => import('@/components/dashboard/RadiationMap'), {
+  ssr: false
+});
 
 // Резервные данные для новостей
 const fallbackNews = [
@@ -100,6 +105,14 @@ const Index = () => {
         <ShellingReport 
           events={mockShellingEvents} 
           lastEvent="03.08.2023"
+        />
+        <DynamicMap 
+          cities={[
+            { name: 'Баштанка', radiation: 20 },
+            { name: 'Дублин', radiation: 12 },
+            { name: 'Алматы', radiation: 15 },
+            { name: 'Белград', radiation: 18 }
+          ]} 
         />
       </main>
 
