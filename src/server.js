@@ -8,8 +8,14 @@ const token = '8035186242:AAEnO3k6G9T_0UCaMkVUD2XWzRtYKIGl5H0';
 const bot = new TelegramBot(token, { polling: true });
 const port = 3000;
 
-// Serve static files from the dist directory
+// Статические файлы из dist
 app.use(express.static(path.join(__dirname, '../dist')));
+
+// Обработка TypeScript файлов
+app.use('/*.tsx', (req, res, next) => {
+  res.type('application/javascript');
+  next();
+});
 
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
@@ -24,7 +30,7 @@ bot.onText(/\/start/, (msg) => {
   });
 });
 
-// Handle all routes for SPA
+// SPA маршрутизация
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
