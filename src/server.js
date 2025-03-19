@@ -28,6 +28,25 @@ app.use('/*.tsx', (req, res, next) => {
   next();
 });
 
+// Обработка всех сообщений
+bot.on('message', async (msg) => {
+  const chatId = msg.chat.id;
+  
+  // Проверяем, является ли это командой /start
+  if (msg.text && msg.text === '/start') {
+    const webAppUrl = 'https://soft-truffle-020837.netlify.app';
+    bot.sendMessage(chatId, 'Наблюдение за территорией', {
+      reply_markup: {
+        keyboard: [[
+          { text: 'Открыть карту', web_app: { url: webAppUrl } }
+        ]],
+        resize_keyboard: true
+      }
+    });
+    return;
+  }
+});
+
 // Обработка добавления бота в группу
 bot.on('new_chat_members', async (msg) => {
   const newMembers = msg.new_chat_members;
@@ -35,28 +54,22 @@ bot.on('new_chat_members', async (msg) => {
   const botWasAdded = newMembers.some(member => member.id === botInfo.id);
   
   if (botWasAdded) {
-    bot.sendMessage(msg.chat.id, 'Похуй танки ми з Баштанки!Наблюдение продолжается...');
+    const chatId = msg.chat.id;
+    const webAppUrl = 'https://soft-truffle-020837.netlify.app';
+    bot.sendMessage(chatId, 'Похуй танки ми з Баштанки!Наблюдение продолжается...', {
+      reply_markup: {
+        keyboard: [[
+          { text: 'Открыть карту', web_app: { url: webAppUrl } }
+        ]],
+        resize_keyboard: true
+      }
+    });
   }
 });
 
-// Обработка команды /start
-bot.onText(/\/start/, (msg) => {
-  const chatId = msg.chat.id;
-  const webAppUrl = 'https://soft-truffle-020837.netlify.app';
-  const welcomeMessage = 'Наблюдение за территорией:';
-
-  bot.sendMessage(chatId, welcomeMessage, {
-    reply_markup: {
-      inline_keyboard: [[
-        { text: 'Открыть приложение', web_app: { url: webAppUrl } }
-      ]]
-    }
-  });
-});
-
-// Показываем команды бота
+// Устанавливаем только одну команду
 bot.setMyCommands([
-  { command: '/start', description: 'Открыть приложение для наблюдения' }
+  { command: '/start', description: 'Запустить бота' }
 ]);
 
 // SPA routing
