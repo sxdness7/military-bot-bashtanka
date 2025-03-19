@@ -11,7 +11,12 @@ const __dirname = dirname(__filename);
 const app = express();
 const token = '8035186242:AAEnO3k6G9T_0UCaMkVUD2XWzRtYKIGl5H0';
 const bot = new TelegramBot(token, { polling: true });
-const port = 3000;
+const port = process.env.PORT || 3000;
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  next();
+});
 
 // Serve static files from dist
 app.use(express.static(path.join(__dirname, '../dist')));
@@ -25,7 +30,7 @@ app.use('/*.tsx', (req, res, next) => {
 
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
-  const webAppUrl = `https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co`;
+  const webAppUrl = `https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co:3000`;
   
   const welcomeMessage = msg.chat.type === 'private' 
     ? 'Добро пожаловать! Нажмите кнопку ниже, чтобы открыть приложение:'
