@@ -8,10 +8,10 @@ const token = '8035186242:AAEnO3k6G9T_0UCaMkVUD2XWzRtYKIGl5H0';
 const bot = new TelegramBot(token, { polling: true });
 const port = 3000;
 
-// Статические файлы из dist
+// Serve static files from dist
 app.use(express.static(path.join(__dirname, '../dist')));
 
-// Обработка TypeScript файлов
+// Handle TypeScript files
 app.use('/*.tsx', (req, res, next) => {
   res.type('application/javascript');
   next();
@@ -21,7 +21,11 @@ bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
   const webAppUrl = `https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co`;
   
-  bot.sendMessage(chatId, 'Добро пожаловать! Нажмите кнопку ниже, чтобы открыть приложение:', {
+  const welcomeMessage = msg.chat.type === 'private' 
+    ? 'Добро пожаловать! Нажмите кнопку ниже, чтобы открыть приложение:'
+    : 'Привет всем в чате! Я бот для доступа к веб-приложению. Используйте кнопку ниже:';
+
+  bot.sendMessage(chatId, welcomeMessage, {
     reply_markup: {
       inline_keyboard: [[
         { text: 'Открыть приложение', web_app: { url: webAppUrl } }
@@ -30,7 +34,7 @@ bot.onText(/\/start/, (msg) => {
   });
 });
 
-// SPA маршрутизация
+// SPA routing
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
