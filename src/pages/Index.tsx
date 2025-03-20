@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, lazy, Suspense } from 'react';
 import Header from '@/components/layout/Header';
 import StatusPanel from '@/components/dashboard/StatusPanel';
@@ -77,8 +78,6 @@ const Index = () => {
           />
         </div>
 
-        
-
         <ShellingReport 
           events={mockShellingEvents} 
           lastEvent="03.08.2023"
@@ -89,7 +88,8 @@ const Index = () => {
               { name: 'Баштанка', radiation: 20 },
               { name: 'Дублин', radiation: 12 },
               { name: 'Алматы', radiation: 15 },
-              { name: 'Белград', radiation: 18 }
+              { name: 'Белград', radiation: 18 },
+              { name: 'Житомир', radiation: 14 }
             ]} 
           />
         </Suspense>
@@ -98,10 +98,10 @@ const Index = () => {
       <footer className="py-4 text-center text-sm text-gray-400">
         <div className="container mx-auto">
           <p>
-            Баштанка Телеграм Бот © 2025 | Информационная система мониторинга
+            Баштанский центр мониторинга © 2025 | Информационная система мониторинга
           </p>
           <p className="mt-1 text-xs">
-            Данные обновляются автоматически. Для экстренных ситуаций обращайтесь по телефону 101.
+            Данные обновляются автоматически. Для экстренных ситуаций обращайтесь по телефону 1488.
           </p>
         </div>
       </footer>

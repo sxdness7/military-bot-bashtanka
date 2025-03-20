@@ -15,6 +15,7 @@ const cityCoordinates: { [key: string]: [number, number] } = {
   'Дублин': [53.3498, -6.2603],
   'Алматы': [43.2220, 76.8512],
   'Белград': [44.7866, 20.4489],
+  'Житомир': [50.2547, 28.6587],
 };
 
 const RadiationMap: React.FC<RadiationMapProps> = ({ cities }) => {

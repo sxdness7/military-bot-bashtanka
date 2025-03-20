@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
@@ -29,6 +30,11 @@ const cityStatuses: ShellingEvent[] = [
     id: 4,
     city: 'Белград',
     status: 'Нет военных действий'
+  },
+  {
+    id: 5,
+    city: 'Житомир',
+    status: 'Нет военных действий'
   }
 ];
 
@@ -39,7 +45,7 @@ const ShellingReport = () => {
         <CardTitle>Отчет о безопасности городов</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           {cityStatuses.map((city) => (
             <div key={city.id} className="p-4 border rounded-lg">
               <h3 className="font-bold">{city.city}</h3>
