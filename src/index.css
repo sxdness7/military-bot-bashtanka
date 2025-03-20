@@ -64,9 +64,9 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(circle at center, rgba(122, 20, 20, 0.3), rgba(68, 10, 10, 0.1));
+    background: radial-gradient(circle at center, rgba(140, 25, 25, 0.35), rgba(70, 12, 12, 0.15));
     z-index: -1;
-    animation: pulse-threatening 8s ease-in-out infinite;
+    animation: pulse-threatening 10s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 
   .military-panel {
@@ -149,13 +149,25 @@
 }
 
 @keyframes pulse-threatening {
-  0%, 100% {
-    opacity: 0.6;
-    background: radial-gradient(circle at center, rgba(132, 22, 22, 0.35), rgba(68, 10, 10, 0.15));
+  0% {
+    opacity: 0.55;
+    background: radial-gradient(circle at center, rgba(140, 25, 25, 0.35), rgba(70, 12, 12, 0.15));
+  }
+  25% {
+    opacity: 0.65;
+    background: radial-gradient(circle at center, rgba(150, 30, 30, 0.4), rgba(80, 15, 15, 0.2));
   }
   50% {
-    opacity: 0.8;
-    background: radial-gradient(circle at center, rgba(162, 25, 25, 0.45), rgba(88, 15, 15, 0.25));
+    opacity: 0.75;
+    background: radial-gradient(circle at center, rgba(160, 35, 35, 0.45), rgba(90, 18, 18, 0.25));
+  }
+  75% {
+    opacity: 0.65;
+    background: radial-gradient(circle at center, rgba(150, 30, 30, 0.4), rgba(80, 15, 15, 0.2));
+  }
+  100% {
+    opacity: 0.55;
+    background: radial-gradient(circle at center, rgba(140, 25, 25, 0.35), rgba(70, 12, 12, 0.15));
   }
 }
 
