@@ -9,6 +9,17 @@ interface ShellingEvent {
   status: string;
 }
 
+interface ShellingReportProps {
+  events?: Array<{
+    id: number;
+    date: string;
+    time: string;
+    location: string;
+    description: string;
+  }>;
+  lastEvent?: string;
+}
+
 const cityStatuses: ShellingEvent[] = [
   {
     id: 1,
@@ -38,7 +49,7 @@ const cityStatuses: ShellingEvent[] = [
   }
 ];
 
-const ShellingReport = () => {
+const ShellingReport: React.FC<ShellingReportProps> = ({ events, lastEvent }) => {
   return (
     <Card className="mt-4">
       <CardHeader>

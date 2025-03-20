@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, lazy, Suspense } from 'react';
 import Header from '@/components/layout/Header';
 import StatusPanel from '@/components/dashboard/StatusPanel';
